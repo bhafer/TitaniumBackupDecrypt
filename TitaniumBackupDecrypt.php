@@ -1,5 +1,7 @@
 <?php
 // ---------------------------
+// TitaniumBackupDecrypt
+// https://github.com/bhafer/TitaniumBackupDecrypt
 //
 // Decrypt Titanium Backup for Android encrypted .tar.gz files using PHP.
 //

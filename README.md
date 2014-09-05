@@ -3,7 +3,7 @@ TitaniumBackupDecrypt
 
 Decrypt Titanium Backup for Android encrypted .tar.gz files using PHP.
 
-If you use this program, please let me know via a message on Github. Thanks!
+If you use this program, please let me know via a message on Github. Thanks! <br/>
 https://github.com/bhafer/TitaniumBackupDecrypt
 
 =====================

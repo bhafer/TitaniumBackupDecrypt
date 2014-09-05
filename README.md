@@ -16,12 +16,12 @@ Dependencies: <br/>
 Usage: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; php TitaniumBackupDecrypt <.tar.gz file>
 
-Based on file format specification information from Titanium Backup at: <br/>
+Based on the file format specification information from Titanium Backup at: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5
 
 =====================
 
-https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5 ::
+Snapshot of https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5 ::
 
 So, the file format for encrypted data backups is as follows:
 

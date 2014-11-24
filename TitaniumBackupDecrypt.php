@@ -17,6 +17,10 @@
 //     .tar.gz
 //     .tar.lzop
 //     .tar
+//     .xml.bz2
+//     .xml.gz
+//     .xml.lzop
+//     .xml
 //
 // Based on file format specification information from Titanium Backup at:
 //     https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5
@@ -59,6 +63,11 @@ function pkcs5_unpad($text) {
     return substr($text, 0, -1 * $pad);
 }
 
+if (count($argv) != 2) {
+    echo "No archive file specified.\nUsage:\n     php TitaniumBackupDecrypt <archive-file>\n";
+    exit(1);
+}
+
 $filenameIn = $argv[1];
 $fileIn = fopen($filenameIn, 'rb');
 if ($fileIn === false) {
@@ -76,6 +85,14 @@ if (substr($filename, -strlen('.tar.gz')) == '.tar.gz') {
     $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar.lzop') . '-decrypted.tar.lzop';
 } else if (substr($filename, -strlen('.tar')) == '.tar') {
     $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar') . '-decrypted.tar';
+} else if (substr($filename, -strlen('.xml.gz')) == '.xml.gz') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.xml.gz') . '-decrypted.xml.gz';
+} else if (substr($filename, -strlen('.xml.bz2')) == '.xml.bz2') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.xml.bz2') . '-decrypted.xml.bz2';
+} else if (substr($filename, -strlen('.xml.lzop')) == '.xml.lzop') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.xml.lzop') . '-decrypted.xml.lzop';
+} else if (substr($filename, -strlen('.xml')) == '.xml') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.xml') . '-decrypted.xml';
 } else {
     echo "Unknown archive file type.\n";
     exit(1);

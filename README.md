@@ -19,7 +19,11 @@ Where archive-file is a file of one of the following types: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; .tar.bz2 <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; .tar.gz <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; .tar.lzop <br/>
-&nbsp;&nbsp;&nbsp;&nbsp; .tar
+&nbsp;&nbsp;&nbsp;&nbsp; .tar <br/>
+&nbsp;&nbsp;&nbsp;&nbsp; .xml.bz2 <br/>
+&nbsp;&nbsp;&nbsp;&nbsp; .xml.gz <br/>
+&nbsp;&nbsp;&nbsp;&nbsp; .xml.lzop <br/>
+&nbsp;&nbsp;&nbsp;&nbsp; .xml
 
 Based on the file format specification information from Titanium Backup at: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5

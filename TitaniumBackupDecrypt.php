@@ -3,7 +3,7 @@
 // TitaniumBackupDecrypt
 // https://github.com/bhafer/TitaniumBackupDecrypt
 //
-// Decrypt Titanium Backup for Android encrypted .tar.gz files using PHP.
+// Decrypts archive files from Titanium Backup for Android.
 //
 // Dependencies:
 //     http://phpseclib.sourceforge.net/ :: Install via PEAR with:
@@ -11,7 +11,12 @@
 //         pear install phpseclib/Crypt_AES phpseclib/Crypt_RSA
 //
 // Usage:
-//     php TitaniumBackupDecrypt <.tar.gz file>
+//     php TitaniumBackupDecrypt <archive-file>
+// Where archive-file is a file of one of the following types:
+//     .tar.bz2
+//     .tar.gz
+//     .tar.lzop
+//     .tar
 //
 // Based on file format specification information from Titanium Backup at:
 //     https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5
@@ -58,15 +63,30 @@ $filenameIn = $argv[1];
 $fileIn = fopen($filenameIn, 'rb');
 if ($fileIn === false) {
     echo "File not found: $filenameIn";
-    exit();
+    exit(1);
+}
+
+// Determine input file type.
+$filename = basename($argv[1]);
+if (substr($filename, -strlen('.tar.gz')) == '.tar.gz') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar.gz') . '-decrypted.tar.gz';
+} else if (substr($filename, -strlen('.tar.bz2')) == '.tar.bz2') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar.bz2') . '-decrypted.tar.bz2';
+} else if (substr($filename, -strlen('.tar.lzop')) == '.tar.lzop') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar.lzop') . '-decrypted.tar.lzop';
+} else if (substr($filename, -strlen('.tar')) == '.tar') {
+    $filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar') . '-decrypted.tar';
+} else {
+    echo "Unknown archive file type.\n";
+    exit(1);
 }
 
 $header = fgets($fileIn, 64);
 $header = rtrim($header, "\n");
 echo "File type: $header \n";
 if ($header != "TB_ARMOR_V1") {
-    echo "Unsupported file type. Expected: \"TB_ARMOR_V1\".";
-    exit();
+    echo "Unsupported file format. Expected: \"TB_ARMOR_V1\".";
+    exit(1);
 }
 
 $passphraseHmacKey = fgets($fileIn, 1024);
@@ -75,7 +95,7 @@ $passphraseHmacKey = rtrim($passphraseHmacKey, "\n");
 $passphraseHmacKey = base64_decode($passphraseHmacKey, true);
 if ($passphraseHmacKey === false) {
     echo "Invalid Passphrase HMAC Key.";
-    exit();
+    exit(1);
 }
 
 $passphraseHmacResult = fgets($fileIn, 1024);
@@ -84,7 +104,7 @@ $passphraseHmacResult = rtrim($passphraseHmacResult, "\n");
 $passphraseHmacResult = base64_decode($passphraseHmacResult, true);
 if ($passphraseHmacResult === false) {
     echo "Invalid Passphrase HMAC Result.";
-    exit();
+    exit(1);
 }
 
 $publicKey = fgets($fileIn, 1024);
@@ -93,7 +113,7 @@ $publicKey = rtrim($publicKey, "\n");
 $publicKey = base64_decode($publicKey, true);
 if ($publicKey === false) {
     echo "Invalid Public Key.";
-    exit();
+    exit(1);
 }
 
 $encryptedPrivateKey = fgets($fileIn, 4096);
@@ -102,7 +122,7 @@ $encryptedPrivateKey = rtrim($encryptedPrivateKey, "\n");
 $encryptedPrivateKey = base64_decode($encryptedPrivateKey, true);
 if ($encryptedPrivateKey === false) {
     echo "Invalid Encrypted Private Key.";
-    exit();
+    exit(1);
 }
 
 $encryptedSessionKey = fgets($fileIn, 1024);
@@ -111,7 +131,7 @@ $encryptedSessionKey = rtrim($encryptedSessionKey, "\n");
 $encryptedSessionKey = base64_decode($encryptedSessionKey, true);
 if ($encryptedSessionKey === false) {
     echo "Invalid Encrypted Session Key.";
-    exit();
+    exit(1);
 }
 
 // @TODO Would be much better if password were hidden on the command line.
@@ -125,13 +145,13 @@ if (PHP_OS == 'WINNT') {
 
 if ($passphraseHmacResult != hash_hmac('sha1', $passphrase, $passphraseHmacKey, true)) {
     echo "Supplied passphrase not valid for encrypted file.";
-    exit();
+    exit(1);
 }
 
 $aesKey = sha1($passphrase, true) . "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
 if (strlen($aesKey) * 8 != 256) {
     echo "Error generating AES key from supplied passphrase.";
-    exit();
+    exit(1);
 }
 
 $aesCipher = new Crypt_AES(CRYPT_AES_MODE_CBC);
@@ -151,7 +171,6 @@ $decryptedSessionKey = $rsaCipher->decrypt($encryptedSessionKey);
 echo "Session Key Length: " . strlen($decryptedSessionKey) * 8 . " \n";
 
 // Create output file.
-$filenameOut = dirname($argv[1]) . DIRECTORY_SEPARATOR . basename($argv[1], '.tar.gz') . '-decrypted.tar.gz';
 $fileOut = fopen($filenameOut, 'wb');
 echo "Writing file: $filenameOut\n";
 

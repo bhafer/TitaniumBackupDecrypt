@@ -14,7 +14,12 @@ Dependencies: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pear install phpseclib/Crypt_AES phpseclib/Crypt_RSA
 
 Usage: <br/>
-&nbsp;&nbsp;&nbsp;&nbsp; php TitaniumBackupDecrypt <.tar.gz file>
+    php TitaniumBackupDecrypt <archive-file> <br/>
+Where archive-file is a file of one of the following types: <br/>
+    .tar.bz2 <br/>
+    .tar.gz <br/>
+    .tar.lzop <br/>
+    .tar
 
 Based on the file format specification information from Titanium Backup at: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; https://plus.google.com/+ChristianEgger/posts/MQBmYhKDex5

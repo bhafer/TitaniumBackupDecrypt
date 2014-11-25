@@ -153,6 +153,7 @@ if ($encryptedSessionKey === false) {
 
 // @TODO Would be much better if password were hidden on the command line.
 $prompt = "Enter encryption passphrase: ";
+echo "OS: " . PHP_OS . "\n";
 if (PHP_OS == 'WINNT') {
   echo $prompt;
   $passphrase = stream_get_line(STDIN, 1024, PHP_EOL);

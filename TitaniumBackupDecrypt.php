@@ -3,7 +3,7 @@
 // TitaniumBackupDecrypt
 // https://github.com/bhafer/TitaniumBackupDecrypt
 //
-// Decrypts archive files from Titanium Backup for Android.
+// Decrypts encrypted archive files from Titanium Backup for Android.
 //
 // Dependencies:
 //     http://phpseclib.sourceforge.net/ :: Install via PEAR with:

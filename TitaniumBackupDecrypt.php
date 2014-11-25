@@ -152,14 +152,9 @@ if ($encryptedSessionKey === false) {
 }
 
 // @TODO Would be much better if password were hidden on the command line.
-$prompt = "Enter encryption passphrase: ";
-echo "OS: " . PHP_OS . "\n";
-if (PHP_OS == 'WINNT') {
-  echo $prompt;
-  $passphrase = stream_get_line(STDIN, 1024, PHP_EOL);
-} else {
-  $passphrase = readline($prompt);
-}
+//echo "OS: " . PHP_OS . "\n";
+echo "Enter encryption passphrase: ";
+$passphrase = stream_get_line(STDIN, 1024, PHP_EOL);
 
 if ($passphraseHmacResult != hash_hmac('sha1', $passphrase, $passphraseHmacKey, true)) {
     echo "Supplied passphrase not valid for encrypted file.";

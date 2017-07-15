@@ -63,6 +63,25 @@ function pkcs5_unpad($text) {
     return substr($text, 0, -1 * $pad);
 }
 
+function prompt($message) {
+    if (PHP_SAPI !== 'cli') {
+        return false;
+    }
+    echo $message;
+    //$ret = stream_get_line(STDIN, 1024, PHP_EOL); // Echoes the password to the screen
+    if ((PHP_OS === 'WINNT') || (PHP_OS === 'WIN32')) {
+        $ret = exec(__DIR__ . '\hidden-input\build\hiddeninput.exe');
+        echo PHP_EOL;
+    }
+    else {
+        system('stty -echo');
+        $ret = trim(fgets(STDIN));
+        system('stty echo');
+        echo PHP_EOL;
+    }
+    return $ret;
+}
+
 if (count($argv) != 2) {
     echo "No archive file specified.\nUsage:\n     php TitaniumBackupDecrypt <archive-file>\n";
     exit(1);
@@ -71,7 +90,7 @@ if (count($argv) != 2) {
 $filenameIn = $argv[1];
 $fileIn = fopen($filenameIn, 'rb');
 if ($fileIn === false) {
-    echo "File not found: $filenameIn";
+    echo "File not found: $filenameIn\n";
     exit(1);
 }
 
@@ -102,7 +121,7 @@ $header = fgets($fileIn, 64);
 $header = rtrim($header, "\n");
 echo "File type: $header \n";
 if ($header != "TB_ARMOR_V1") {
-    echo "Unsupported file format. Expected: \"TB_ARMOR_V1\".";
+    echo "Unsupported file format. Expected: \"TB_ARMOR_V1\".\n";
     exit(1);
 }
 
@@ -111,7 +130,7 @@ $passphraseHmacKey = rtrim($passphraseHmacKey, "\n");
 //echo "Passphrase HMAC Key: $passphraseHmacKey \n";
 $passphraseHmacKey = base64_decode($passphraseHmacKey, true);
 if ($passphraseHmacKey === false) {
-    echo "Invalid Passphrase HMAC Key.";
+    echo "Invalid Passphrase HMAC Key.\n";
     exit(1);
 }
 
@@ -120,7 +139,7 @@ $passphraseHmacResult = rtrim($passphraseHmacResult, "\n");
 //echo "Passphrase HMAC Result: $passphraseHmacResult \n";
 $passphraseHmacResult = base64_decode($passphraseHmacResult, true);
 if ($passphraseHmacResult === false) {
-    echo "Invalid Passphrase HMAC Result.";
+    echo "Invalid Passphrase HMAC Result.\n";
     exit(1);
 }
 
@@ -129,7 +148,7 @@ $publicKey = rtrim($publicKey, "\n");
 //echo "Public Key: $publicKey \n";
 $publicKey = base64_decode($publicKey, true);
 if ($publicKey === false) {
-    echo "Invalid Public Key.";
+    echo "Invalid Public Key.\n";
     exit(1);
 }
 
@@ -138,7 +157,7 @@ $encryptedPrivateKey = rtrim($encryptedPrivateKey, "\n");
 //echo "Encrypted Private Key: $encryptedPrivateKey \n";
 $encryptedPrivateKey = base64_decode($encryptedPrivateKey, true);
 if ($encryptedPrivateKey === false) {
-    echo "Invalid Encrypted Private Key.";
+    echo "Invalid Encrypted Private Key.\n";
     exit(1);
 }
 
@@ -147,23 +166,20 @@ $encryptedSessionKey = rtrim($encryptedSessionKey, "\n");
 //echo "Encrypted Session Key: $encryptedSessionKey \n";
 $encryptedSessionKey = base64_decode($encryptedSessionKey, true);
 if ($encryptedSessionKey === false) {
-    echo "Invalid Encrypted Session Key.";
+    echo "Invalid Encrypted Session Key.\n";
     exit(1);
 }
 
-// @TODO Would be much better if password were hidden on the command line.
-//echo "OS: " . PHP_OS . "\n";
-echo "Enter encryption passphrase: ";
-$passphrase = stream_get_line(STDIN, 1024, PHP_EOL);
+$passphrase = prompt("Enter encryption passphrase: ", true);
 
 if ($passphraseHmacResult != hash_hmac('sha1', $passphrase, $passphraseHmacKey, true)) {
-    echo "Supplied passphrase not valid for encrypted file.";
+    echo "Supplied passphrase not valid for encrypted file.\n";
     exit(1);
 }
 
 $aesKey = sha1($passphrase, true) . "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
 if (strlen($aesKey) * 8 != 256) {
-    echo "Error generating AES key from supplied passphrase.";
+    echo "Error generating AES key from supplied passphrase.\n";
     exit(1);
 }
 

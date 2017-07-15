@@ -1,0 +1,5 @@
+https://github.com/Seldaek/hidden-input
+
+License
+
+This is in the public domain as far as I am concerned. Should anyone involved in writing the original bits feel particularly sad or offended by my publishing of the sources or binary, drop me a line.

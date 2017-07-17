@@ -214,6 +214,6 @@ while (!feof($fileIn)) {
 fclose($fileIn);
 fclose($fileOut);
 
-echo "Done.";
+echo "Done.\n";
 
 ?>

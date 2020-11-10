@@ -67,3 +67,23 @@ byte[] sessionKey = baos.toByteArray();
 And finally, we decrypt the data itself with the session key (which can be either a 128-bit, 192-bit or 256-bit key) and with a 0x00 IV.
 
 While the "zero" IV is suboptimal from a security standpoint, it allows files to be encoded faster - because every little bit counts, especially when we store backups with LZO compression.
+
+=====================
+
+Docker usage: (until a full image is built)
+
+First, build your own image with Docker
+
+    docker build -t TitaniumBackupDecrypt .
+
+Then, run as a standalone container.
+
+You <b>MUST</b> mount the directory that holds TitaniumBackup files into the container.
+
+Example for Windows hosts
+
+    docker run --rm -ti -v C:\Users\Example\TitaniumBackup:/app /app/encrypted-backup.tar.gz
+
+Example for Linux hosts
+
+    docker run --rm -ti -v /home/example/TitaniumBackup:/app /app/encrypted-backup.tar.gz

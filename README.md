@@ -15,6 +15,9 @@ Dependencies: <br/>
 
 Usage: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; php TitaniumBackupDecrypt &lt;archive-file&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Will check for TB_ARCHIVE_PASSWORD environment variable or else prompt for password.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --OR--
+&nbsp;&nbsp;&nbsp;&nbsp; php TitaniumBackupDecrypt &lt;archive-file&gt; &lt;password&gt; <br/>
 Where archive-file is a file of one of the following types: <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; .tar.bz2 <br/>
 &nbsp;&nbsp;&nbsp;&nbsp; .tar.gz <br/>

@@ -82,8 +82,8 @@ function prompt($message) {
     return $ret;
 }
 
-if (count($argv) != 2) {
-    echo "No archive file specified.\nUsage:\n     php TitaniumBackupDecrypt <archive-file>\n";
+if ((count($argv) != 2) && (count($argv) != 3)) {
+    echo "No archive file specified.\nUsage:\n    php TitaniumBackupDecrypt <archive-file>\n        Will check for TB_ARCHIVE_PASSWORD environment variable or else prompt for password.\n          --OR--\n    php TitaniumBackupDecrypt <archive-file> <password>\n";
     exit(1);
 }
 
@@ -170,7 +170,15 @@ if ($encryptedSessionKey === false) {
     exit(1);
 }
 
-$passphrase = prompt("Enter encryption passphrase: ", true);
+if (count($argv) == 3) {
+    $passphrase = $argv[2];
+    echo "Using encryption password from arguments.\n";
+} else if (getenv('TB_ARCHIVE_PASSWORD') !== FALSE) {
+    $passphrase = getenv('TB_ARCHIVE_PASSWORD');
+    echo "Using encryption password from environment (TB_ARCHIVE_PASSWORD).\n";
+} else {
+    $passphrase = prompt("Enter encryption passphrase: ", true);
+}
 
 if ($passphraseHmacResult != hash_hmac('sha1', $passphrase, $passphraseHmacKey, true)) {
     echo "Supplied passphrase not valid for encrypted file.\n";
